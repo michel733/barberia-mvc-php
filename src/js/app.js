@@ -345,20 +345,21 @@ function mostrarResumen() {
     botonReservar.classList.add('boton');
     botonReservar.textContent = 'Reservar Cita';
     botonReservar.onclick = reservarCita;
-    if(cita.disponible === false) {
-        botonReservar.disabled = true;
-        // Añadir mensaje claro en el resumen
-        const aviso = document.createElement('P');
-        aviso.classList.add('alerta', 'error');
-        aviso.textContent = 'Este horario está reservado. Selecciona otra hora.';
-        resumen.appendChild(aviso);
-    }
 
     resumen.appendChild(nombreCliente);
     resumen.appendChild(fechaCita);
     resumen.appendChild(horaCita);
 
-    resumen.appendChild(botonReservar);
+    // Si el horario NO está disponible, mostramos un aviso y NO añadimos el botón
+    if(cita.disponible === false) {
+        const aviso = document.createElement('P');
+        aviso.classList.add('alerta', 'error');
+        aviso.textContent = 'Este horario está reservado. Selecciona otra hora.';
+        resumen.appendChild(aviso);
+    } else {
+        // Disponible: añadir el botón para reservar
+        resumen.appendChild(botonReservar);
+    }
 }
 
 async function reservarCita() {
