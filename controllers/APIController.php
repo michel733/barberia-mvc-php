@@ -14,6 +14,26 @@ class APIController {
 
     public static function guardar() {
         
+        // Antes de guardar, verificar que el horario no esté reservado (±40 minutos)
+        $fecha = $_POST['fecha'] ?? null;
+        $hora = $_POST['hora'] ?? null;
+
+        if($fecha && $hora) {
+            $consulta = "SELECT hora FROM citas WHERE fecha = '" . $fecha . "'";
+            $citasExistentes = Cita::SQL($consulta);
+
+            $timestampSolicitado = strtotime($fecha . ' ' . $hora);
+            foreach($citasExistentes as $ce) {
+                $timestampExistente = strtotime($fecha . ' ' . $ce->hora);
+                $diff = abs($timestampSolicitado - $timestampExistente);
+                if($diff <= 40 * 60) {
+                    // Devuelve error en JSON para que el front pueda manejarlo
+                    echo json_encode(['resultado' => false, 'error' => 'Horario reservado']);
+                    return;
+                }
+            }
+        }
+
         // Almacena la Cita y devuelve el ID
         $cita = new Cita($_POST);
         $resultado = $cita->guardar();

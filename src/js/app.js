@@ -408,6 +408,14 @@ async function reservarCita() {
                     window.location.reload();
                 }, 3000);
             })
+        } else {
+            // Mostrar error devuelto por el servidor o genérico
+            const msg = resultado.error || 'No se pudo crear la cita';
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: msg
+            });
         }
     } catch (error) {
         Swal.fire({
