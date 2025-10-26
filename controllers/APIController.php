@@ -59,10 +59,31 @@ class APIController {
     public static function eliminar() {
         
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['id'];
+            $id = $_POST['id'] ?? null;
+
+            if(!$id) {
+                // Bad request
+                http_response_code(400);
+                echo json_encode(['resultado' => false, 'error' => 'ID faltante']);
+                return;
+            }
+
             $cita = Cita::find($id);
-            $cita->eliminar();
-            header('Location:' . $_SERVER['HTTP_REFERER']);
+            if(!$cita) {
+                // No existe la cita
+                http_response_code(404);
+                echo json_encode(['resultado' => false, 'error' => 'Cita no encontrada']);
+                return;
+            }
+
+            $eliminado = $cita->eliminar();
+
+            // Redirigir de vuelta al admin o devolver JSON si es API
+            if(!empty($_SERVER['HTTP_REFERER'])) {
+                header('Location:' . $_SERVER['HTTP_REFERER']);
+            } else {
+                echo json_encode(['resultado' => $eliminado]);
+            }
         }
     }
 

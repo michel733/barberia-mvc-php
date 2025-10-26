@@ -33,8 +33,8 @@ class AdminController {
         $citas = AdminCita::SQL($consulta);
 
         $router->render('admin/index', [
-            'nombre' => $_SESSION['nombre'],
-            'citas' => $citas, 
+            'nombre' => $_SESSION['nombre'] ?? '',
+            'citas' => $citas,
             'fecha' => $fecha
         ]);
     }

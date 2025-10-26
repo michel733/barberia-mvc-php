@@ -29,9 +29,11 @@ class LoginController {
                         $_SESSION['email'] = $usuario->email;
                         $_SESSION['login'] = true;
 
+                        // Asegurar que la bandera admin exista y tenga '1' o '0'
+                        $_SESSION['admin'] = ($usuario->admin === "1") ? "1" : "0";
+
                         // Redireccionamiento
-                        if($usuario->admin === "1") {
-                            $_SESSION['admin'] = $usuario->admin ?? null;
+                        if($_SESSION['admin'] === "1") {
                             header('Location: /admin');
                         } else {
                             header('Location: /cita');

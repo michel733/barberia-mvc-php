@@ -29,7 +29,13 @@ function isAuth() : void {
 }
 
 function isAdmin() : void {
-    if(!isset($_SESSION['admin'])) {
+    // Asegurar que la sesión esté iniciada
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // Comprobar que el valor de admin sea '1'
+    if(!isset($_SESSION['admin']) || $_SESSION['admin'] != 1) {
         header('Location: /');
     }
 }
