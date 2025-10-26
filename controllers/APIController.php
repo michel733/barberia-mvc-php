@@ -45,4 +45,41 @@ class APIController {
             header('Location:' . $_SERVER['HTTP_REFERER']);
         }
     }
+
+    // Verifica si un horario está reservado en un rango de +-40 minutos para la fecha dada
+    public static function verificar() {
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $fecha = $_POST['fecha'] ?? null;
+            $hora = $_POST['hora'] ?? null;
+
+            if(!$fecha || !$hora) {
+                echo json_encode(['reservado' => false, 'error' => 'Faltan parámetros']);
+                return;
+            }
+
+            // Obtener todas las horas de citas para la fecha
+            $consulta = "SELECT hora FROM citas WHERE fecha = '" . $fecha . "'";
+            $citas = Cita::SQL($consulta);
+
+            $reservado = false;
+            $conflictos = [];
+
+            $timestampSolicitado = strtotime($fecha . ' ' . $hora);
+
+            foreach($citas as $c) {
+                $horaExistente = $c->hora;
+                $timestampExistente = strtotime($fecha . ' ' . $horaExistente);
+
+                // Diferencia en segundos
+                $diff = abs($timestampSolicitado - $timestampExistente);
+
+                if($diff <= 40 * 60) { // 40 minutos en segundos
+                    $reservado = true;
+                    $conflictos[] = $horaExistente;
+                }
+            }
+
+            echo json_encode(['reservado' => $reservado, 'conflictos' => $conflictos]);
+        }
+    }
 }

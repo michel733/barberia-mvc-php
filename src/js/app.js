@@ -9,6 +9,8 @@ const cita = {
     hora: '',
     servicios: []
 }
+// flag que indica si el horario está disponible (true) o reservado (false)
+cita.disponible = true;
 
 document.addEventListener('DOMContentLoaded', function() {
     iniciarApp();
@@ -208,9 +210,40 @@ function seleccionarHora() {
         } else {
             cita.hora = e.target.value;
 
-            // console.log(cita);
+            // Verificar disponibilidad al seleccionar la hora
+            comprobarDisponibilidad(cita.fecha, cita.hora);
         }
     })
+}
+
+async function comprobarDisponibilidad(fecha, hora) {
+    // Si falta fecha u hora, asumimos disponible (la validación previa lo controla)
+    if(!fecha || !hora) return;
+
+    try {
+        const datos = new FormData();
+        datos.append('fecha', fecha);
+        datos.append('hora', hora);
+
+        const respuesta = await fetch('/api/verificar', {
+            method: 'POST',
+            body: datos
+        });
+
+        const resultado = await respuesta.json();
+
+        if(resultado && resultado.reservado) {
+            cita.disponible = false;
+            mostrarAlerta('Este horario está reservado', 'error', '.formulario', false);
+        } else {
+            cita.disponible = true;
+            // Mostrar alerta positiva momentánea
+            mostrarAlerta('Horario disponible', 'exito', '.formulario');
+        }
+
+    } catch (error) {
+        console.log('Error verificando disponibilidad', error);
+    }
 }
 
 function mostrarAlerta(mensaje, tipo, elemento, desaparece = true) {
@@ -312,6 +345,14 @@ function mostrarResumen() {
     botonReservar.classList.add('boton');
     botonReservar.textContent = 'Reservar Cita';
     botonReservar.onclick = reservarCita;
+    if(cita.disponible === false) {
+        botonReservar.disabled = true;
+        // Añadir mensaje claro en el resumen
+        const aviso = document.createElement('P');
+        aviso.classList.add('alerta', 'error');
+        aviso.textContent = 'Este horario está reservado. Selecciona otra hora.';
+        resumen.appendChild(aviso);
+    }
 
     resumen.appendChild(nombreCliente);
     resumen.appendChild(fechaCita);
@@ -337,6 +378,15 @@ async function reservarCita() {
     // console.log([...datos]);
 
     try {
+        // Prevención en cliente: no enviar si el horario no está disponible
+        if(cita.disponible === false) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Horario no disponible',
+                text: 'El horario seleccionado está reservado. Por favor elige otro.'
+            });
+            return;
+        }
         // Petición hacia la api
         const url = '/api/citas'
         const respuesta = await fetch(url, {

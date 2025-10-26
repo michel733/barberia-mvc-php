@@ -38,6 +38,8 @@ $router->get('/admin', [AdminController::class, 'index']);
 $router->get('/api/servicios', [APIController::class, 'index']);
 $router->post('/api/citas', [APIController::class, 'guardar']);
 $router->post('/api/eliminar', [APIController::class, 'eliminar']);
+// Verificar disponibilidad de horario (no solapamiento)
+$router->post('/api/verificar', [APIController::class, 'verificar']);
 
 // CRUD de Servicios
 $router->get('/servicios', [ServicioController::class, 'index']);
