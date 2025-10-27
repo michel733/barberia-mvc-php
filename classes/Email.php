@@ -3,6 +3,7 @@
 namespace Classes;
 
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 class Email {
 
@@ -19,18 +20,25 @@ class Email {
 
     public function enviarConfirmacion() {
 
-         // create a new object
-         $mail = new PHPMailer();
-         $mail->isSMTP();
-         $mail->Host = $_ENV['EMAIL_HOST'];
-         $mail->SMTPAuth = true;
-         $mail->Port = $_ENV['EMAIL_PORT'];
-         $mail->Username = $_ENV['EMAIL_USER'];
-         $mail->Password = $_ENV['EMAIL_PASSWORD'];
+         // create a new object and configure SMTP (use env vars with Brevo defaults)
+         $mail = new PHPMailer(true);
+         try {
+             $mail->isSMTP();
+             $mail->Host = getenv('EMAIL_HOST') ?: 'smtp-relay.brevo.com';
+             $mail->SMTPAuth = true;
+             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+             $mail->Port = (int)(getenv('EMAIL_PORT') ?: 587);
+             $mail->Username = getenv('EMAIL_USER') ?: '980e91002@smtp-brevo.com';
+             $mail->Password = getenv('EMAIL_PASSWORD') ?: 'TxkXE9hn4UdbPlVD';
 
-         $mail->setFrom('cuentas@appsalon.com');
-         $mail->addAddress('cuentas@appsalon.com', 'AppSalon.com');
-         $mail->Subject = 'Confirma tu Cuenta';
+             $from = getenv('EMAIL_FROM') ?: 'no-reply@cultured-phase-qif.domcloud.dev';
+             $fromName = getenv('EMAIL_FROM_NAME') ?: 'AppSalon';
+             $mail->setFrom($from, $fromName);
+             $mail->addAddress($this->email, $this->nombre);
+             $mail->Subject = 'Confirma tu Cuenta';
+         } catch (PHPMailerException $e) {
+             error_log('[MAIL CONFIG ERROR] ' . $e->getMessage());
+         }
 
          // Set HTML
          $mail->isHTML(TRUE);
@@ -44,25 +52,35 @@ class Email {
          $mail->Body = $contenido;
 
          //Enviar el mail
-         $mail->send();
+         try {
+             $mail->send();
+         } catch (PHPMailerException $e) {
+             error_log('[MAIL ERROR] ' . $e->getMessage());
+         }
 
     }
 
     public function enviarInstrucciones() {
 
-        // create a new object
-         $mail = new PHPMailer();
-         $mail->isSMTP();
-         $mail->Host = $_ENV['EMAIL_HOST'];
-         $mail->SMTPAuth = true;
-         $mail->Port = $_ENV['EMAIL_PORT'];
-         $mail->Username = $_ENV['EMAIL_USER'];
-         $mail->Password = $_ENV['EMAIL_PASSWORD'];
+          // create a new object and configure SMTP (use env vars with Brevo defaults)
+            $mail = new PHPMailer(true);
+            try {
+                 $mail->isSMTP();
+                 $mail->Host = getenv('EMAIL_HOST') ?: 'smtp-relay.brevo.com';
+                 $mail->SMTPAuth = true;
+                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                 $mail->Port = (int)(getenv('EMAIL_PORT') ?: 587);
+                 $mail->Username = getenv('EMAIL_USER') ?: '980e91002@smtp-brevo.com';
+                 $mail->Password = getenv('EMAIL_PASSWORD') ?: 'TxkXE9hn4UdbPlVD';
 
-    
-        $mail->setFrom('cuentas@appsalon.com');
-        $mail->addAddress('cuentas@appsalon.com', 'AppSalon.com');
-        $mail->Subject = 'Reestablece tu password';
+                $from = getenv('EMAIL_FROM') ?: 'no-reply@cultured-phase-qif.domcloud.dev';
+                $fromName = getenv('EMAIL_FROM_NAME') ?: 'AppSalon';
+                $mail->setFrom($from, $fromName);
+                $mail->addAddress($this->email, $this->nombre);
+                $mail->Subject = 'Reestablece tu password';
+            } catch (PHPMailerException $e) {
+                error_log('[MAIL CONFIG ERROR] ' . $e->getMessage());
+            }
 
         // Set HTML
         $mail->isHTML(TRUE);
@@ -76,6 +94,10 @@ class Email {
         $mail->Body = $contenido;
 
             //Enviar el mail
-        $mail->send();
+            try {
+                $mail->send();
+            } catch (PHPMailerException $e) {
+                error_log('[MAIL ERROR] ' . $e->getMessage());
+            }
     }
 }
