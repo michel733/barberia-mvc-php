@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: appsalon-php
+    env: docker
+    plan: free
+    disk: 512
+    dockerfilePath: Dockerfile
+    buildCommand: ''
+    startCommand: ''
+    envVars:
+      - key: COMPOSER_ALLOW_SUPERUSER
+        value: "1"
