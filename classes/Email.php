@@ -24,14 +24,26 @@ class Email {
          $mail = new PHPMailer(true);
          try {
              $mail->isSMTP();
-             $mail->Host = getenv('EMAIL_HOST') ?: 'smtp-relay.brevo.com';
+             
+             // Verificar que todas las variables de entorno necesarias estén configuradas
+             $host = getenv('EMAIL_HOST');
+             $port = getenv('EMAIL_PORT');
+             $username = getenv('EMAIL_USER');
+             $password = getenv('EMAIL_PASSWORD');
+             $from = getenv('EMAIL_FROM');
+
+             if (!$host || !$port || !$username || !$password || !$from) {
+                 throw new PHPMailerException('Faltan configuraciones SMTP requeridas. Por favor, configure todas las variables de entorno necesarias.');
+             }
+
+             $mail->Host = $host;
              $mail->SMTPAuth = true;
              $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-             $mail->Port = (int)(getenv('EMAIL_PORT') ?: 587);
-             $mail->Username = getenv('EMAIL_USER') ?: '980e91002@smtp-brevo.com';
-             $mail->Password = getenv('EMAIL_PASSWORD') ?: 'TxkXE9hn4UdbPlVD';
+             $mail->Port = (int)$port;
+             $mail->Username = $username;
+             $mail->Password = $password;
 
-             $from = getenv('EMAIL_FROM') ?: 'no-reply@cultured-phase-qif.domcloud.dev';
+             $from = getenv('EMAIL_FROM');
              $fromName = getenv('EMAIL_FROM_NAME') ?: 'AppSalon';
              $mail->setFrom($from, $fromName);
              $mail->addAddress($this->email, $this->nombre);
@@ -45,7 +57,7 @@ class Email {
          $mail->CharSet = 'UTF-8';
 
          $contenido = '<html>';
-         $contenido .= "<p><strong>Hola " . $this->email .  "</strong> Has Creado tu cuenta en App Salón, solo debes confirmarla presionando el siguiente enlace</p>";
+         $contenido .= "<p><strong>Hola " . $this->nombre .  "</strong> Has Creado tu cuenta en App Salón, solo debes confirmarla presionando el siguiente enlace</p>";
          $contenido .= "<p>Presiona aquí: <a href='" . $_ENV['PROJECT_URL'] . "/confirmar-cuenta?token=" . $this->token . "'>Confirmar Cuenta</a>";
          $contenido .= "<p>Si tu no solicitaste este cambio, puedes ignorar el mensaje</p>";
          $contenido .= '</html>';
@@ -66,14 +78,26 @@ class Email {
             $mail = new PHPMailer(true);
             try {
                  $mail->isSMTP();
-                 $mail->Host = getenv('EMAIL_HOST') ?: 'smtp-relay.brevo.com';
+                 
+                 // Verificar que todas las variables de entorno necesarias estén configuradas
+                 $host = getenv('EMAIL_HOST');
+                 $port = getenv('EMAIL_PORT');
+                 $username = getenv('EMAIL_USER');
+                 $password = getenv('EMAIL_PASSWORD');
+                 $from = getenv('EMAIL_FROM');
+
+                 if (!$host || !$port || !$username || !$password || !$from) {
+                     throw new PHPMailerException('Faltan configuraciones SMTP requeridas. Por favor, configure todas las variables de entorno necesarias.');
+                 }
+
+                 $mail->Host = $host;
                  $mail->SMTPAuth = true;
                  $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                 $mail->Port = (int)(getenv('EMAIL_PORT') ?: 587);
-                 $mail->Username = getenv('EMAIL_USER') ?: '980e91002@smtp-brevo.com';
-                 $mail->Password = getenv('EMAIL_PASSWORD') ?: 'TxkXE9hn4UdbPlVD';
+                 $mail->Port = (int)$port;
+                 $mail->Username = $username;
+                 $mail->Password = $password;
 
-                $from = getenv('EMAIL_FROM') ?: 'no-reply@cultured-phase-qif.domcloud.dev';
+                 $from = getenv('EMAIL_FROM');
                 $fromName = getenv('EMAIL_FROM_NAME') ?: 'AppSalon';
                 $mail->setFrom($from, $fromName);
                 $mail->addAddress($this->email, $this->nombre);
