@@ -105,8 +105,7 @@ class Email {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // O SMTPS
             $mail->Port = $_ENV['EMAIL_PORT']; 
 
-            var_dump($_ENV['EMAIL_HOST']);
-            var_dump($_ENV['EMAIL_USER']);
+            
 
             // Destinatarios
             $mail->setFrom('cuentas@barberianuevoestilo.com', 'Barberia Nuevo Estilo');
