@@ -66,7 +66,8 @@ class Email {
             $contenido = '<html>';
             // ¡Corrección! Usar $this->nombre en el saludo
             $contenido .= "<p><strong>Hola " . $this->nombre .  "</strong> Has Creado tu cuenta en App Salón, solo debes confirmarla presionando el siguiente enlace</p>";
-            $contenido .= "<p>Presiona aquí: <a href='" . $_ENV['PROJECT_URL'] . "/confirmar-cuenta?token=" . $this->token . "'>Confirmar Cuenta</a>";
+            // Usar ruta relativa para evitar mixed content y respetar el esquema (http/https) de la página
+            $contenido .= "<p>Presiona aquí: <a href='/confirmar-cuenta?token=" . $this->token . "'>Confirmar Cuenta</a>";
             $contenido .= "<p>Si tu no solicitaste este cambio, puedes ignorar el mensaje</p>";
             $contenido .= '</html>';
             $mail->Body = $contenido;
@@ -118,7 +119,8 @@ class Email {
 
             $contenido = '<html>';
             $contenido .= "<p><strong>Hola " . $this->nombre .  "</strong> Has solicitado reestablecer tu password, sigue el siguiente enlace para hacerlo.</p>";
-            $contenido .= "<p>Presiona aquí: <a href='" . $_ENV['PROJECT_URL'] . "/recuperar?token=" . $this->token . "'>Reestablecer Password</a>";
+            // Usar ruta relativa para evitar mixed content y respetar el esquema (http/https) de la página
+            $contenido .= "<p>Presiona aquí: <a href='/recuperar?token=" . $this->token . "'>Reestablecer Password</a>";
             $contenido .= "<p>Si tu no solicitaste este cambio, puedes ignorar el mensaje</p>";
             $contenido .= '</html>';
             $mail->Body = $contenido;
