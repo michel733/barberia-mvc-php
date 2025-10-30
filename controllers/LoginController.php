@@ -71,7 +71,7 @@ class LoginController {
                  $usuario = Usuario::where('email', $auth->email);
 
                  if($usuario && $usuario->confirmado === "1") {
-                        
+                       
                     // Generar un token
                     $usuario->crearToken();
                     $usuario->guardar();
@@ -83,8 +83,8 @@ class LoginController {
                     // Alerta de exito
                     Usuario::setAlerta('exito', 'Revisa tu email');
                  } else {
-                     Usuario::setAlerta('error', 'El Usuario no existe o no esta confirmado');
-                     
+                      Usuario::setAlerta('error', 'El Usuario no existe o no esta confirmado');
+                      
                  }
             } 
         }
@@ -160,16 +160,24 @@ class LoginController {
                     // Generar un Token único
                     $usuario->crearToken();
 
-                    // Enviar el Email
-                    $email = new Email($usuario->nombre, $usuario->email, $usuario->token);
-                    $email->enviarConfirmacion();
-
-                    // Crear el usuario
+                    // --- INICIO DE LA CORRECCIÓN DE LÓGICA ---
+                    // Primero se guarda el usuario en la BD
                     $resultado = $usuario->guardar();
-                    // debuguear($usuario);
+                    
                     if($resultado) {
+                        // Si el guardado fue exitoso, entonces se envía el email
+
+                        // --- INICIO DE LA CORRECCIÓN DE ARGUMENTOS ---
+                        // Se pasan los parámetros en el orden correcto: (email, nombre, token)
+                        $email = new Email($usuario->email, $usuario->nombre, $usuario->token);
+                        // --- FIN DE LA CORRECCIÓN DE ARGUMENTOS ---
+                        
+                        $email->enviarConfirmacion();
+
+                        // Redirigir al usuario a la página de mensaje
                         header('Location: /mensaje');
                     }
+                    // --- FIN DE LA CORRECCIÓN DE LÓGICA ---
                 }
             }
         }
