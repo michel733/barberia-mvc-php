@@ -184,16 +184,7 @@ function nombreCliente() {
 function seleccionarFecha() {
     const inputFecha = document.querySelector('#fecha');
     inputFecha.addEventListener('input', function(e) {
-
-        const dia = new Date(e.target.value).getUTCDay();
-
-        if( [6, 0].includes(dia) ) {
-            e.target.value = '';
-            mostrarAlerta('Fines de semana no permitidos', 'error', '.formulario');
-        } else {
-            cita.fecha = e.target.value;
-        }
-        
+        cita.fecha = e.target.value;
     });
 }
 
@@ -204,7 +195,7 @@ function seleccionarHora() {
 
         const horaCita = e.target.value;
         const hora = horaCita.split(":")[0];
-        if(hora < 10 || hora > 18) {
+        if(hora < 9 || hora > 18) {
             e.target.value = '';
             mostrarAlerta('Hora No Válida', 'error', '.formulario');
         } else {

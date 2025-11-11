@@ -28,16 +28,13 @@ class Email {
          $mail = new PHPMailer(true);
 
          try {
-            // Configuración del Servidor
-            // $mail->SMTPDebug = SMTP::DEBUG_SERVER; 
+            // ... (Configuración del servidor, puertos, etc. - todo eso está bien) ...
             $mail->isSMTP();
             $mail->Host = $_ENV['EMAIL_HOST'];
             $mail->SMTPAuth = true;
             $mail->Username = $_ENV['EMAIL_USER'];
             $mail->Password = $_ENV['EMAIL_PASSWORD'];
-
-            // Configuración de Seguridad
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // O SMTPS (si usas puerto 465)
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; 
             $mail->Port = $_ENV['EMAIL_PORT']; 
 
             // Destinatarios
@@ -50,18 +47,21 @@ class Email {
             $mail->CharSet = 'UTF-8';
 
             $contenido = '<html>';
-            $contenido .= "<p><strong>Hola " . $this->nombre .  "</strong> Has Creado tu cuenta en App Salón, solo debes confirmarla presionando el siguiente enlace</p>";
+            // --- INICIO DE LA MEJORA ---
+            $contenido .= '<body>';
+            // --- FIN DE LA MEJORA ---
             
-            // --- INICIO DE LA CORRECCIÓN ---
-            // Usamos la URL completa para que funcione en los clientes de correo
+            $contenido .= "<p><strong>Hola " . $this->nombre .  "</strong> Has Creado tu cuenta en App Salón, solo debes confirmarla presionando el siguiente enlace</p>";
             $contenido .= "<p>Presiona aquí: <a href='" . $_ENV['PROJECT_URL'] . "/confirmar-cuenta?token=" . $this->token . "'>Confirmar Cuenta</a>";
-            // --- FIN DE LA CORRECCIÓN ---
-
             $contenido .= "<p>Si tu no solicitaste este cambio, puedes ignorar el mensaje</p>";
+
+            // --- INICIO DE LA MEJORA ---
+            $contenido .= '</body>';
+            // --- FIN DE LA MEJORA ---
             $contenido .= '</html>';
+            
             $mail->Body = $contenido;
 
-            // Enviar el correo
             $mail->send();
             return true;
 
@@ -79,14 +79,13 @@ class Email {
         $mail = new PHPMailer(true);
         
         try {
-            // Configuración del servidor
-            // $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+            // ... (Configuración del servidor, puertos, etc. - todo eso está bien) ...
             $mail->isSMTP();
             $mail->Host = $_ENV['EMAIL_HOST'];
             $mail->SMTPAuth = true;
             $mail->Username = $_ENV['EMAIL_USER'];
             $mail->Password = $_ENV['EMAIL_PASSWORD'];
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // O SMTPS (si usas puerto 465)
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = $_ENV['EMAIL_PORT']; 
 
             // Destinatarios
@@ -99,18 +98,22 @@ class Email {
             $mail->CharSet = 'UTF-8';
 
             $contenido = '<html>';
+            // --- INICIO DE LA MEJORA ---
+            $contenido .= '<body>';
+            // --- FIN DE LA MEJORA ---
+
+            // ¡ASEGÚRATE DE QUE ESTA LÍNEA TENGA <p> Y NO p> EN TU SERVIDOR!
             $contenido .= "<p><strong>Hola " . $this->nombre .  "</strong> Has solicitado reestablecer tu password, sigue el siguiente enlace para hacerlo.</p>";
-            
-            // --- INICIO DE LA CORRECCIÓN ---
-            // Usamos la URL completa para que funcione en los clientes de correo
             $contenido .= "<p>Presiona aquí: <a href='" . $_ENV['PROJECT_URL'] . "/recuperar?token=" . $this->token . "'>Reestablecer Password</a>";
-            // --- FIN DE LA CORRECCIÓN ---
-            
             $contenido .= "<p>Si tu no solicitaste este cambio, puedes ignorar el mensaje</p>";
+
+            // --- INICIO DE LA MEJORA ---
+            $contenido .= '</body>';
+            // --- FIN DE LA MEJORA ---
             $contenido .= '</html>';
+            
             $mail->Body = $contenido;
 
-            //Enviar el mail
             $mail->send();
             return true;
 
