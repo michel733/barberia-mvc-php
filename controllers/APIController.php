@@ -123,4 +123,6 @@ class APIController {
             echo json_encode(['reservado' => $reservado, 'conflictos' => $conflictos]);
         }
     }
+
+
 }

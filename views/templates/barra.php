@@ -17,4 +17,14 @@ if (session_status() === PHP_SESSION_NONE) {
         <a class="boton" href="/servicios">Ver Servicios</a>
         <a class="boton" href="/servicios/crear">Nuevo Servicio</a>
     </div>
+<?php } else { ?>
+    <div class="barra-servicios">
+        <?php 
+        $currentUrl = $_SERVER['REQUEST_URI'];
+        if(strpos($currentUrl, '/mis-citas') !== false) { ?>
+            <a class="boton" href="/cita">Nueva Cita</a>
+        <?php } else { ?>
+            <a class="boton" href="/mis-citas">Mis Citas</a>
+        <?php } ?>
+    </div>
 <?php } ?>

@@ -33,3 +33,7 @@
     <a href="/crear-cuenta">¿Aún no tienes una cuenta? Crear una</a>
     <a href="/olvide">¿Olvidaste tu password?</a>
 </div>
+
+<div class="terminos" style="text-align: center; margin-top: 2rem; font-size: 1.2rem;">
+    <a href="/terminos" style="color: #0da6f3; text-decoration: none;">Términos y Condiciones</a>
+</div>

@@ -38,7 +38,7 @@
                 <input
                     id="fecha"
                     type="date"
-                    min="<?php echo date('Y-m-d', strtotime('+1 day') ); ?>"
+                    min="<?php echo date('Y-m-d'); ?>"
                 />
             </div>
 

@@ -216,4 +216,8 @@ class LoginController {
             'alertas' => $alertas
         ]);
     }
+
+    public static function terminos(Router $router) {
+        $router->render('auth/terminos');
+    }
 }

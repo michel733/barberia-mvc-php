@@ -30,8 +30,12 @@ $router->post('/crear-cuenta', [LoginController::class, 'crear']);
 $router->get('/confirmar-cuenta', [LoginController::class, 'confirmar']);
 $router->get('/mensaje', [LoginController::class, 'mensaje']);
 
+// Términos y Condiciones
+$router->get('/terminos', [LoginController::class, 'terminos']);
+
 // AREA PRIVADA
 $router->get('/cita', [CitaController::class, 'index']);
+$router->get('/mis-citas', [CitaController::class, 'misCitas']);
 $router->get('/admin', [AdminController::class, 'index']);
 
 // API de Citas
