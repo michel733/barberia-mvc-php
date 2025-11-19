@@ -223,19 +223,24 @@ function seleccionarHora() {
         
         // Si es el día actual, validar que la hora no haya pasado
         const fechaSeleccionada = cita.fecha;
-        const fechaHoy = new Date().toISOString().split('T')[0];
         
-        if(fechaSeleccionada === fechaHoy) {
+        if(fechaSeleccionada) {
             const ahora = new Date();
-            const horaActual = ahora.getHours();
-            const minutosActuales = ahora.getMinutes();
-            const minutosActualesTotal = (horaActual * 60) + minutosActuales;
+            const fechaHoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+            const fechaSeleccionadaObj = new Date(fechaSeleccionada + 'T00:00:00');
             
-            // Validar que la hora no haya pasado
-            if(minutosSeleccionados < minutosActualesTotal) {
-                e.target.value = '';
-                mostrarAlerta('No puedes reservar en una hora que ya pasó', 'error', '.formulario');
-                return;
+            // Solo validar hora si es el mismo día
+            if(fechaSeleccionadaObj.getTime() === fechaHoy.getTime()) {
+                const horaActual = ahora.getHours();
+                const minutosActuales = ahora.getMinutes();
+                const minutosActualesTotal = (horaActual * 60) + minutosActuales;
+                
+                // Validar que la hora no haya pasado
+                if(minutosSeleccionados < minutosActualesTotal) {
+                    e.target.value = '';
+                    mostrarAlerta('No puedes reservar en una hora que ya pasó', 'error', '.formulario');
+                    return;
+                }
             }
         }
         
